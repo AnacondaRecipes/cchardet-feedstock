@@ -1,17 +1,17 @@
 {% set name = "cchardet" %}
-{% set version = "2.1.7" %}
+{% set version = "2.3.0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: c428b6336545053c2589f6caf24ea32276c6664cb86db817e03a94c60afa0eaf
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: e08fade06af9aa4888ad99609a66bbce99ad01c1269c0ea673af75a15a6f762e
 
 build:
-  number: 1
-  skip: true  # [py<36]
+  number: 0
+  skip: true  # [py<311]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed -vvv
 
 requirements:
@@ -21,9 +21,8 @@ requirements:
   host:
     - python
     - pip
-    - setuptools
-    - wheel
-    - cython
+    - setuptools >=77
+    - cython >=3.2.9,<3.4
   run:
     - python
 
