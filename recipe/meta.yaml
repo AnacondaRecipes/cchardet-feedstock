@@ -2,7 +2,7 @@
 {% set version = "2.3.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -11,12 +11,16 @@ source:
 
 build:
   number: 0
+  # pyproject.toml: requires-python = ">=3.11"
   skip: true  # [py<311]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed -vvv
+  entry_points:
+    - cchardetect = cchardet.cli.cchardetect:main
 
 requirements:
   build:
     - {{ compiler('c') }}
+    - {{ stdlib('c') }}
     - {{ compiler('cxx') }}
   host:
     - python
@@ -27,17 +31,25 @@ requirements:
     - python
 
 test:
+  source_files:
+    - tests/test_cli.py
   requires:
     - pip
-  commands:
-    - pip check
+    - pytest
   imports:
     - cchardet
+    - cchardet.cli
+  commands:
+    - pip check
+    - cchardetect --version
+    - pytest -v tests/test_cli.py
 
 about:
   home: https://github.com/PyYoshi/cChardet
   license_file: COPYING
-  license: MPL-1.1 AND GPL-3.0-or-later AND LGPL-2.1-or-later
+  # Bundled uchardet is the Mozilla tri-license (MPL 1.1/GPL 2.0/LGPL 2.1, pick one);
+  # matches pyproject.toml `license` and the uchardet source headers.
+  license: MPL-1.1 OR GPL-2.0-or-later OR LGPL-2.1-or-later
   license_family: OTHER
   summary: cChardet is high speed universal character encoding detector
   description: |
